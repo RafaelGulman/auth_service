@@ -19,24 +19,33 @@ const (
 type HttpMethod struct {
 	responseType HttpType
 	method       func(http.ResponseWriter, *http.Request)
+	httpPath     string
 }
 
-func NewHttpMethod(typeMethod HttpType, method func(http.ResponseWriter, *http.Request)) *HttpMethod {
+func NewHttpMethod(typeMethod HttpType, method func(http.ResponseWriter, *http.Request), httpPath string) *HttpMethod {
 	return &HttpMethod{
 		responseType: typeMethod,
 		method:       method,
+		httpPath:     httpPath,
 	}
 }
 
 type Controller struct {
-	Rout   mux.Router
-	Action map[string]func(http.ResponseWriter, *http.Request) //init all action for REST pattern. ["actionName"]function
+	rout   mux.Router
+	action map[string]HttpMethod //init all action for REST pattern. ["actionName"]function
 }
 
 // Init router with map of func, for work with REST
-func NewController(r mux.Router, actionSet map[string]func(http.ResponseWriter, *http.Request)) *Controller {
+func NewController(r mux.Router, actionSet map[string]HttpMethod) *Controller {
 	return &Controller{
-		Rout:   r,
-		Action: actionSet,
+		rout:   r,
+		action: actionSet,
 	}
+}
+
+func (c *Controller) Start(ip string) {
+	for _, f := range c.action {
+		c.rout.HandleFunc(f.httpPath, f.method).Methods(string(f.responseType))
+	}
+	http.ListenAndServe(ip, &c.rout)
 }

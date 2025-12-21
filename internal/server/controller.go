@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -47,5 +48,7 @@ func (c *Controller) Start(ip string) {
 	for _, f := range c.action {
 		c.rout.HandleFunc(f.httpPath, f.method).Methods(string(f.responseType))
 	}
+
+	fmt.Printf("Сервер запущен на %s", ip)
 	http.ListenAndServe(ip, &c.rout)
 }

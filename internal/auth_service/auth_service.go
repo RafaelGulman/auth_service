@@ -90,6 +90,7 @@ func CreateAccount(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	var newAccount Account
+
 	err := json.NewDecoder(r.Body).Decode(&newAccount) //запрос декодировали в объект
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -110,4 +111,9 @@ func CreateAccount(w http.ResponseWriter, r *http.Request) {
 	accounts = append(accounts, newAccount) //Пока заглушка
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(newAccount)
+}
+
+func GetAccounts(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(accounts)
 }

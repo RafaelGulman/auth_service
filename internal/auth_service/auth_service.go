@@ -1,10 +1,8 @@
 package auth_service
 
 import (
-	"encoding/json"
 	"errors"
 	mathV2 "math/rand/v2"
-	"net/http"
 	"strings"
 )
 
@@ -85,35 +83,11 @@ func checkWithAscii(ascii string, rt ...RangeType) bool {
 	return false
 }
 
-// Логика записи создания аккаунта
-func CreateAccount(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
-	var newAccount Account
-
-	err := json.NewDecoder(r.Body).Decode(&newAccount) //запрос декодировали в объект
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(map[string]string{"error": "Неверный формат данных"})
-		return
+func CheckLogin(acc Account) bool {
+	for _, v := range accounts {
+		if v.Login == acc.Login && v.Password == acc.Password {
+			return true
+		}
 	}
-	if newAccount.Login == "" {
-		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(map[string]string{"error": "Пустой запрос"})
-		return
-	}
-
-	/*
-		Логика работы с Бд
-		(перевод пароля в хэш и запихивание в бд)
-	*/
-
-	accounts = append(accounts, newAccount) //Пока заглушка
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(newAccount)
-}
-
-func GetAccounts(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(accounts)
+	return false
 }

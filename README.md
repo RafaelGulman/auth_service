@@ -7,7 +7,7 @@ ___
 Return all accounts. Return Header with state and json ```{{"login":"", "password":""}, ....}```
 *Example*
 ```
-curl http://localhost:8081/accounts  
+curl http://localhost:8081/GetAccounts  
 ```
 
 ###POST
@@ -19,7 +19,8 @@ Create account. Accepts login and password. Return Header with state and json ``
 "password":""}
 ```
 *Example*
-```curl -X POST http://localhost:8081/CreateAccount \                    ✔ 
+```
+curl -X POST http://localhost:8081/CreateAccount \                    ✔ 
 -H "Content-Type: application/json" \
 -d '{"login":"Rulsan","password":"123hfdds$"}'
 ```
@@ -32,7 +33,8 @@ Logining in account if it is exist. Retun Header with statte and json ```"succes
 "password":""}
 ```
 *Example*
-```curl -X POST http://localhost:8081/EnterAccount \                    ✔ 
+```
+curl -X POST http://localhost:8081/EnterAccount \                    ✔ 
 -H "Content-Type: application/json" \
 -d '{"login":"Rulsan","password":"123hfdds$"}'
 ```
